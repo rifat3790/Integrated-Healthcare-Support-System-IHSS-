@@ -24,7 +24,7 @@ const menuItems = () => (
       <Link href="/">Home</Link>
     </li>
     <li>
-      <Link href="/feature">Feature</Link>
+      <Link href="/Feature">Feature</Link>
     </li>
     <li>
       <Link href="/how-it-works">How It Works</Link>
@@ -89,7 +89,29 @@ export default function RootLayout({ children }) {
             </div>
           </div>
         </nav>
+
+        {/* Main Content */}
         {children}
+
+        {/* Footer */}
+        <footer className="bg-base-200 text-center py-5 mt-10">
+          <div className="container mx-auto">
+            <p className="text-sm">
+              © {new Date().getFullYear()} IHSS. All rights reserved.
+            </p>
+            <div className="flex justify-center gap-4 mt-3">
+              <Link href="/privacy-policy" className="link link-hover">
+                Privacy Policy
+              </Link>
+              <Link href="/terms-of-service" className="link link-hover">
+                Terms of Service
+              </Link>
+              <Link href="/contact-us" className="link link-hover">
+                Contact Us
+              </Link>
+            </div>
+          </div>
+        </footer>
       </body>
     </html>
   );

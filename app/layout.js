@@ -79,10 +79,10 @@ export default function RootLayout({ children }) {
             </div>
             <div className="navbar-end">
               <div className="hidden lg:flex gap-3">
-                <Link href="/login">
+                <Link href="/Login">
                   <button className="btn btn-primary">Login</button>
                 </Link>
-                <Link href="/register">
+                <Link href="/Register">
                   <button className="btn btn-secondary">Register</button>
                 </Link>
               </div>

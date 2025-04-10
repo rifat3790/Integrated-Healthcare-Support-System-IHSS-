@@ -1,9 +1,10 @@
 import Image from "next/image";
+import BannerPage from "./Banner/page";
 
 export default function Home() {
   return (
     <div>
-      <h1>Hello world!!</h1>
+      <BannerPage></BannerPage>
     </div>
   );
 }

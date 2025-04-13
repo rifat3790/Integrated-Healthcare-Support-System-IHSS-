@@ -24,18 +24,18 @@ export function AppSidebar() {
     {
       category: "Main",
       items: [
-        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Dashboard", href: "/Dashboard", icon: LayoutDashboard },
         { name: "Home", href: "/", icon: Home },
       ],
     },
     {
       category: "Health Management",
       items: [
-        { name: "Appointments", href: "/dashboard/appointments", icon: Calendar },
-        { name: "Prescriptions", href: "/dashboard/prescriptions", icon: FileText },
-        { name: "Test Results", href: "/dashboard/test-results", icon: FileText },
-        { name: "Health Tracker", href: "/dashboard/health-tracker", icon: Heart },
-        { name: "Medications", href: "/dashboard/medications", icon: Pill },
+        { name: "Appointments", href: "/Dashboard/Appointments", icon: Calendar },
+        { name: "Prescriptions", href: "/Dashboard/Prescriptions", icon: FileText },
+        { name: "Test Results", href: "/Dashboard/test-results", icon: FileText },
+        { name: "Health Tracker", href: "/Dashboard/health-tracker", icon: Heart },
+        { name: "Medications", href: "/Dashboard/medications", icon: Pill },
       ],
     },
     {

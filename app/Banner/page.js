@@ -1,13 +1,14 @@
+import Link from "next/link";
 import React from "react";
 
 const BannerPage = () => {
   return (
     <div>
       <div className="hero bg-base-200 min-h-screen">
-        <div className="hero-content flex-col lg:flex-row-reverse lg:justify-center items-center">
+        <div className="hero-content flex-col lg:flex-row-reverse lg:justify-between items-center">
           <div className="w-1/2">
             <img
-              src="https://www.kindpng.com/picc/m/495-4952535_doctors-png-transparent-image-doctor-png-png-download.png"
+              src="https://i.ibb.co.com/99WNLscM/Prescription-management-system-mediasoft.png"
               alt="Medical Banner Image"
               width={500}
               height={500}
@@ -23,7 +24,7 @@ const BannerPage = () => {
               and view test results all in one secure platform.
             </p>
             <div>
-              <button className="btn btn-primary">Get Started</button>
+              <Link href="/Login"><button className="btn btn-primary">Get Started</button></Link>
               <button className="btn btn-secondary ml-4">Learn More</button>
             </div>
           </div>

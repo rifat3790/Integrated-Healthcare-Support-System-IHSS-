@@ -71,7 +71,7 @@ const DashboardPage = () => {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-gray-500">Welcome back, John Doe</p>
+          <p className="text-gray-500">Welcome back, Rifat</p>
         </div>
 
         {/* Cards */}

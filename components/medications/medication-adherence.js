@@ -158,14 +158,14 @@ export function MedicationAdherence() {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Overall Adherence Rate</span>
               <Badge
-                className={`${
-                  overallAdherence >= 90
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300"
-                    : overallAdherence >= 75
-                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300"
-                    : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300"
-                }`}
-              >
+  className={`${
+    overallAdherence >= 90
+      ? "text-green-600"
+      : overallAdherence >= 75
+      ? "text-yellow-600"
+      : "text-red-600"
+  }`}
+>
                 {overallAdherence >= 90
                   ? "Excellent"
                   : overallAdherence >= 75

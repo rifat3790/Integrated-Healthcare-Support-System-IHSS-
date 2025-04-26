@@ -1,23 +1,59 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const RegisterPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [userType, setUserType] = useState("patient");
+  const [userType, setUserType] = useState("patient"); // Default user type
+  const [specialty, setSpecialty] = useState(""); // Specialty for doctors
+
+  const specialties = [
+    "Cardiology",
+    "Dermatology",
+    "Neurology",
+    "Pediatrics",
+    "Psychiatry",
+    "Radiology",
+    "Surgery",
+  ]; // List of specialties for doctors
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate registration - in a real app, you would call your API
-    setTimeout(() => {
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const confirmPassword = e.target["confirm-password"].value;
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
       setIsLoading(false);
-      router.push("/dashboard");
-    }, 1000);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, userType, specialty }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Registration successful! Please log in.");
+        router.push("/Login");
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Error registering:", error);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -25,140 +61,119 @@ const RegisterPage = () => {
       <div className="w-full max-w-md p-8 bg-base-100 rounded-lg shadow-md">
         {/* Header Section */}
         <div className="text-center mb-8">
-          <div className="text-4xl text-primary mb-4">🛡️</div>
+          <div className="text-4xl text-primary mb-4">📝</div>
           <h2 className="text-3xl font-bold">Create an Account</h2>
           <p className="text-sm text-gray-500 mt-2">
-            Enter your information to create an account
+            Sign up to get started with IHSS
           </p>
         </div>
 
         {/* Registration Form */}
         <form onSubmit={handleRegister}>
-          <div className="space-y-4">
-            <div className="form-control">
-              <label htmlFor="name" className="label">
-                <span className="label-text font-semibold">Full Name</span>
-              </label>
-              <input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                className="input input-bordered w-full"
-                required
-              />
-            </div>
-
-            <div className="form-control">
-              <label htmlFor="email" className="label">
-                <span className="label-text font-semibold">Email</span>
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                className="input input-bordered w-full"
-                required
-              />
-            </div>
-
-            <div className="form-control">
-              <label htmlFor="password" className="label">
-                <span className="label-text font-semibold">Password</span>
-              </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                className="input input-bordered w-full"
-                required
-              />
-            </div>
-
-            <div className="form-control">
-              <label htmlFor="confirm-password" className="label">
-                <span className="label-text font-semibold">Confirm Password</span>
-              </label>
-              <input
-                id="confirm-password"
-                type="password"
-                placeholder="Confirm your password"
-                className="input input-bordered w-full"
-                required
-              />
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-semibold">Account Type</span>
-              </label>
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="accountType"
-                    value="patient"
-                    checked={userType === "patient"}
-                    onChange={() => setUserType("patient")}
-                    className="radio"
-                  />
-                  <span>Patient</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="accountType"
-                    value="doctor"
-                    checked={userType === "doctor"}
-                    onChange={() => setUserType("doctor")}
-                    className="radio"
-                  />
-                  <span>Doctor</span>
-                </label>
-              </div>
-            </div>
-
-            {userType === "doctor" && (
-              <div className="form-control">
-                <label htmlFor="specialty" className="label">
-                  <span className="label-text font-semibold">Specialty</span>
-                </label>
-                <select
-                  id="specialty"
-                  className="select select-bordered w-full"
-                  required
-                >
-                  <option value="" disabled selected>
-                    Select specialty
-                  </option>
-                  <option value="cardiology">Cardiology</option>
-                  <option value="dermatology">Dermatology</option>
-                  <option value="neurology">Neurology</option>
-                  <option value="orthopedics">Orthopedics</option>
-                  <option value="pediatrics">Pediatrics</option>
-                  <option value="psychiatry">Psychiatry</option>
-                  <option value="general">General Practice</option>
-                </select>
-              </div>
-            )}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text font-semibold">Name</span>
+            </label>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              className="input input-bordered w-full"
+              required
+            />
           </div>
+
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text font-semibold">Email</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="m@example.com"
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text font-semibold">Password</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text font-semibold">Confirm Password</span>
+            </label>
+            <input
+              type="password"
+              name="confirm-password"
+              placeholder="Confirm your password"
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          {/* User Type Selection */}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text font-semibold">User Type</span>
+            </label>
+            <select
+              className="select select-bordered w-full"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+            >
+              <option value="patient">Patient</option>
+              <option value="doctor">Doctor</option>
+            </select>
+          </div>
+
+          {/* Specialty Dropdown for Doctors */}
+          {userType === "doctor" && (
+            <div className="form-control mb-4">
+              <label className="label">
+                <span className="label-text font-semibold">Specialty</span>
+              </label>
+              <select
+                className="select select-bordered w-full"
+                value={specialty}
+                onChange={(e) => setSpecialty(e.target.value)}
+                required
+              >
+                <option value="">Select your specialty</option>
+                {specialties.map((spec, index) => (
+                  <option key={index} value={spec}>
+                    {spec}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <button
             type="submit"
-            className={`btn btn-primary w-full mt-6 ${
-              isLoading ? "loading" : ""
-            }`}
+            className={`btn btn-primary w-full mt-4 ${isLoading ? "loading" : ""}`}
             disabled={isLoading}
           >
-            {isLoading ? "Creating account..." : "Create Account"}
+            {isLoading ? "Registering..." : "Sign Up"}
           </button>
         </form>
 
         {/* Footer Section */}
         <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{" "}
-          <Link href="/Login" className="text-primary hover:underline">
-            Sign in
-          </Link>
+          <a className="text-primary hover:underline" href="/Login">
+            Log in
+          </a>
         </p>
       </div>
     </div>

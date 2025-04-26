@@ -1,9 +1,12 @@
-"use client"; // Mark this file as a client component
+"use client";
 
 import React, { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("credentials"); // State to manage active tab
+  const [isLoading, setIsLoading] = useState(false); // Loading state for login
   const videoRef = useRef(null); // Ref for the video element
 
   const handleFaceVerification = () => {
@@ -21,6 +24,35 @@ const LoginPage = () => {
       .catch((err) => {
         console.error("Error accessing the camera:", err);
       });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Login successful!");
+        router.push("/Dashboard"); // Redirect to the dashboard
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,37 +89,42 @@ const LoginPage = () => {
 
         {/* Content Based on Active Tab */}
         {activeTab === "credentials" && (
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="form-control mb-4">
               <label className="label">
                 <span className="label-text font-semibold">Email</span>
               </label>
               <input
                 type="email"
+                name="email"
                 placeholder="m@example.com"
                 className="input input-bordered w-full"
+                required
               />
             </div>
 
             <div className="form-control mb-4">
               <label className="label flex justify-between">
                 <span className="label-text font-semibold">Password</span>
-                <a
-                  href="#"
-                  className="text-sm text-primary hover:underline"
-                >
+                <a href="#" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </a>
               </label>
               <input
                 type="password"
+                name="password"
                 placeholder="Enter your password"
                 className="input input-bordered w-full"
+                required
               />
             </div>
 
-            <button type="submit" className="btn btn-primary w-full mt-4">
-              Sign In
+            <button
+              type="submit"
+              className={`btn btn-primary w-full mt-4 ${isLoading ? "loading" : ""}`}
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
           </form>
         )}

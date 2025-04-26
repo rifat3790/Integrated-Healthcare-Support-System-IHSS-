@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Pill, Clock, Check, BellOff } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "react-hot-toast"; // Updated import
+import { toast } from "react-hot-toast"; 
 
 export function MedicationSchedule() {
   const [loading, setLoading] = useState(true);

@@ -29,9 +29,7 @@ const menuItems = () => (
     <li>
       <Link href="/how-it-works">How It Works</Link>
     </li>
-    <li>
-      <Link href="/testimonial">Testimonial</Link>
-    </li>
+   
   </>
 );
 

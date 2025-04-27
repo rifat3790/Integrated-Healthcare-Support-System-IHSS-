@@ -18,8 +18,14 @@ SELECT * FROM users;
 
 use ihss;
 
-SHOW DATABASES;
+CREATE TABLE appointments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    doctor_name VARCHAR(255) NOT NULL,
+    department VARCHAR(255) NOT NULL,
+    appointment_date DATETIME NOT NULL,
+    status ENUM('upcoming', 'past', 'cancelled') DEFAULT 'upcoming',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-show TABLES;
-DESCRIBE users;
+SELECT * FROM appointments;
 

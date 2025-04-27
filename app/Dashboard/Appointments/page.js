@@ -1,10 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CalendarIcon, Plus } from "lucide-react";
 
 export default function AppointmentsPage() {
-  const [date, setDate] = useState(new Date()); // Ensure `date` is initialized as a `Date` object
+  const [date, setDate] = useState(new Date());
+  const [appointments, setAppointments] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    doctorName: "",
+    department: "",
+    appointmentDate: "",
+  });
+
+  // Fetch appointments from the database
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await fetch("/api/appointments");
+        const data = await response.json();
+        setAppointments(data);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
+  // Handle form submission
+  const handleAddAppointment = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/appointments/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const newAppointment = await response.json();
+        setAppointments([...appointments, { ...formData, id: newAppointment.id }]);
+        setShowForm(false); // Hide the form after submission
+        setFormData({ doctorName: "", department: "", appointmentDate: "" }); // Reset form
+      } else {
+        console.error("Failed to add appointment");
+      }
+    } catch (error) {
+      console.error("Error adding appointment:", error);
+    }
+  };
 
   return (
     <div className="container py-6">
@@ -26,68 +72,74 @@ export default function AppointmentsPage() {
               <option value="cancelled">Cancelled</option>
               <option value="all">All</option>
             </select>
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={() => setShowForm(true)}>
               <Plus className="mr-2 h-4 w-4" />
               New Appointment
             </button>
           </div>
 
-          {/* Tabs for List and Calendar Views */}
-          <div className="tabs">
-            <button className="tab tab-bordered tab-active">List</button>
-            <button className="tab tab-bordered">Calendar</button>
-          </div>
+          {/* Appointment Form */}
+          {showForm && (
+            <form onSubmit={handleAddAppointment} className="card bg-base-100 shadow-md p-4">
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Doctor Name</span>
+                </label>
+                <input
+                  type="text"
+                  className="input input-bordered"
+                  value={formData.doctorName}
+                  onChange={(e) => setFormData({ ...formData, doctorName: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Department</span>
+                </label>
+                <input
+                  type="text"
+                  className="input input-bordered"
+                  value={formData.department}
+                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Appointment Date</span>
+                </label>
+                <input
+                  type="datetime-local"
+                  className="input input-bordered"
+                  value={formData.appointmentDate}
+                  onChange={(e) => setFormData({ ...formData, appointmentDate: e.target.value })}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary w-full">
+                Add Appointment
+              </button>
+            </form>
+          )}
 
           {/* List View */}
           <div className="card bg-base-100 shadow-md">
             <div className="card-body">
               <h2 className="card-title">Upcoming Appointments</h2>
-              <p className="text-sm text-gray-500">View and manage your scheduled appointments</p>
               <div className="mt-4 space-y-4">
-                {/* Appointment Item */}
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <h3 className="font-semibold">Dr. Sarah Johnson</h3>
-                    <p className="text-sm text-gray-500">Cardiology</p>
-                    <p className="text-sm text-gray-500">3/22/2025 - 10:00 AM</p>
+                {appointments.map((appointment) => (
+                  <div key={appointment.id} className="flex items-center justify-between border-b pb-4">
+                    <div>
+                      <h3 className="font-semibold">{appointment.doctorName}</h3>
+                      <p className="text-sm text-gray-500">{appointment.department}</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(appointment.appointmentDate).toLocaleString()}
+                      </p>
+                    </div>
+                    <span className="badge badge-primary">{appointment.status}</span>
                   </div>
-                  <span className="badge badge-primary">Upcoming</span>
-                </div>
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <h3 className="font-semibold">Dr. Michael Chen</h3>
-                    <p className="text-sm text-gray-500">Dermatology</p>
-                    <p className="text-sm text-gray-500">3/22/2025 - 2:00 PM</p>
-                  </div>
-                  <span className="badge badge-primary">Upcoming</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Dr. Emily Rodriguez</h3>
-                    <p className="text-sm text-gray-500">Neurology</p>
-                    <p className="text-sm text-gray-500">3/25/2025 - 11:30 AM</p>
-                  </div>
-                  <span className="badge badge-primary">Upcoming</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Calendar View */}
-          <div className="hidden">
-            <div className="card bg-base-100 shadow-md">
-              <div className="card-body">
-                <h2 className="card-title">Appointment Calendar</h2>
-                <p className="text-sm text-gray-500">View your appointments in calendar format</p>
-                <div className="mt-4 flex h-[400px] items-center justify-center rounded-md border border-dashed">
-                  <div className="text-center">
-                    <CalendarIcon className="mx-auto h-12 w-12 text-gray-400" />
-                    <h3 className="mt-4 text-lg font-medium">Calendar View</h3>
-                    <p className="mt-2 text-sm text-gray-500">
-                      Calendar view would display here with all appointments
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -98,19 +150,12 @@ export default function AppointmentsPage() {
           <div className="card bg-base-100 shadow-md">
             <div className="card-body">
               <h2 className="card-title">Select Date</h2>
-              <p className="text-sm text-gray-500">Choose a date to view or schedule appointments</p>
-              <div className="mt-4">
-                <input
-                  type="date"
-                  className="input input-bordered w-full"
-                  value={date?.toISOString().split("T")[0]} // Ensure `date` is properly formatted
-                  onChange={(e) => setDate(new Date(e.target.value))}
-                />
-                <button className="btn btn-primary mt-4 w-full">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Schedule for {date?.toLocaleDateString()}
-                </button>
-              </div>
+              <input
+                type="date"
+                className="input input-bordered w-full"
+                value={date?.toISOString().split("T")[0]}
+                onChange={(e) => setDate(new Date(e.target.value))}
+              />
             </div>
           </div>
         </div>

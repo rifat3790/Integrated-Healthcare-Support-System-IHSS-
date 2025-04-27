@@ -5,14 +5,12 @@ import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("credentials"); // State to manage active tab
-  const [isLoading, setIsLoading] = useState(false); // Loading state for login
-  const videoRef = useRef(null); // Ref for the video element
+  const [activeTab, setActiveTab] = useState("credentials");
+  const [isLoading, setIsLoading] = useState(false);
+  const videoRef = useRef(null);
 
   const handleFaceVerification = () => {
-    setActiveTab("face-verification"); // Set the active tab to "face-verification"
-
-    // Access the camera
+    setActiveTab("face-verification");
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then((stream) => {
@@ -43,7 +41,9 @@ const LoginPage = () => {
       const data = await response.json();
       if (response.ok) {
         alert("Login successful!");
-        router.push("/Dashboard"); // Redirect to the dashboard
+
+        // Redirect to Dashboard and pass the user name
+        router.push(`/Dashboard?name=${encodeURIComponent(data.user.name)}`);
       } else {
         alert(data.error);
       }
@@ -78,9 +78,7 @@ const LoginPage = () => {
           </button>
           <button
             role="tab"
-            className={`tab ${
-              activeTab === "face-verification" ? "tab-active" : ""
-            }`}
+            className={`tab ${activeTab === "face-verification" ? "tab-active" : ""}`}
             onClick={handleFaceVerification}
           >
             Face Verification
